@@ -229,7 +229,12 @@ const loadFeedFromUrl = (url) => {
     const start = Date.now();
     let feedJson = null, newFeed = null;
     let errorMessage = null;
-    new FetchAppData(url).fetch()
+    let props = {};
+    if (process.env.REACT_APP_ROMUSERNAME && process.env.REACT_APP_ROMPASSWORD) {
+      const credentials = btoa(`${process.env.REACT_APP_ROMUSERNAME}:${process.env.REACT_APP_ROMPASSWORD}`);
+      props.headers = new Headers({'Authorization': `Basic ${credentials}`});
+    }
+    new FetchAppData(url).fetch(props)
       .then(response => response.blob())
       .then(blob => getFeedAsJson(blob))
       .then(json => {
